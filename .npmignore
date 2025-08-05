@@ -1,0 +1,23 @@
+# Development files
+test/
+*.test.js
+.github/
+.git/
+.gitignore
+
+# Documentation that's not needed in package
+README-js-guidelines.md
+
+# Build artifacts
+*.tgz
+node_modules/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

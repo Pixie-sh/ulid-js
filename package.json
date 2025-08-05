@@ -1,0 +1,45 @@
+{
+  "name": "@pixie-sh/pulid",
+  "version": "1.0.0",
+  "description": "pULID - Pixie ULID implementation for JavaScript. A 128-bit identifier combining timestamp, scope, and entropy with ULID and UUIDv4 compatibility.",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "keywords": [
+    "ulid",
+    "uuid",
+    "identifier",
+    "pulid",
+    "pixie",
+    "sortable",
+    "entropy",
+    "timestamp",
+    "scope"
+  ],
+  "author": "Pixie Labs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pixie-sh-public/ulid-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pixie-sh-public/ulid-js/issues"
+  },
+  "homepage": "https://github.com/pixie-sh-public/ulid-js#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "scripts": {
+    "test": "node test/runner.js",
+    "prepublishOnly": "npm test",
+    "lint": "echo 'No linter configured'",
+    "build": "echo 'No build step required'"
+  },
+  "files": [
+    "src/",
+    "types/",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {},
+  "dependencies": {}
+}
