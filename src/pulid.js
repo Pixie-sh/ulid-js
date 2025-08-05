@@ -24,14 +24,21 @@ class pULID {
   constructor(timestamp, scope, entropy) {
     // Validate inputs
     validateTimestamp(timestamp);
-    validateScope(scope);
-    
+
+    // If scope is 0, convert to MAX_SCOPE (65535)
+    const actualScope = scope === 0 ? 65535 : scope;
+
+    // For all other scopes, validate normally
+    if (scope !== 0) {
+      validateScope(scope);
+    }
+
     if (!entropy || entropy.length !== 8) {
       throw new pULIDError(`Invalid entropy: expected 8 bytes, got ${entropy ? entropy.length : 0}`);
     }
 
     this.timestamp = timestamp;
-    this.scope = scope;
+    this.scope = actualScope; // Store the actual scope (65535 if input was 0)
     this.entropy = new Uint8Array(entropy); // Create a copy to prevent external modification
   }
 

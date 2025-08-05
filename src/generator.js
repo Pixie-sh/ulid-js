@@ -167,8 +167,12 @@ class pULIDGenerator {
    * @returns {Object} Current configuration
    */
   getConfig() {
+    // If defaultScope is 0, report MAX_SCOPE in the configuration
+    const reportedScope = this.defaultScope === 0 ? 65535 : this.defaultScope;
+
     return {
-      defaultScope: this.defaultScope,
+      defaultScope: reportedScope,
+      originalScope: this.defaultScope, // Add original scope for debugging
       validateScope: this.validateScope,
       scopeInfo: this.scopeManager.getScopeInfo(),
       timestampInfo: this.timestampGenerator.getTimestampInfo()

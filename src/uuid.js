@@ -129,13 +129,16 @@ class UUIDConverter {
   /**
    * Extract scope from UUID (bytes 6-7)
    * @param {string} uuid - UUID string
-   * @returns {number} Scope value
+   * @returns {number} Scope value (returns 0 if MAX_SCOPE is detected)
    */
   extractScope(uuid) {
     const bytes = this.uuidToBytes(uuid);
-    
+
     // Bytes 6-7 are scope
-    return (bytes[6] << 8) | bytes[7];
+    const extractedScope = (bytes[6] << 8) | bytes[7];
+
+    // If the extracted scope is MAX_SCOPE (65535), return 0 instead
+    return extractedScope === 65535 ? 0 : extractedScope;
   }
 
   /**

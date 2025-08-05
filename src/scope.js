@@ -10,8 +10,8 @@ const { pULIDScopeError } = require('./errors');
  */
 class ScopeManager {
   constructor() {
-    this.PROTECTED_SCOPES = [0]; // Only scope 0 is reserved by library
-    this.MIN_SCOPE = 1;
+    this.PROTECTED_SCOPES = []; // No protected scopes
+    this.MIN_SCOPE = 0;
     this.MAX_SCOPE = 65535; // Allow max scope 65535 as shown in golang examples
   }
 
@@ -27,15 +27,22 @@ class ScopeManager {
       throw new pULIDScopeError(`Invalid scope type: ${typeof scope}. Scope must be an integer`);
     }
 
+    if (scope < 0) {
+      throw new pULIDScopeError(`Invalid scope: ${scope}. Scope must be >= 0`);
+    }
+
+    // Special case: if scope is 0, convert to MAX_SCOPE
+    if (scope === 0) {
+      return this.MAX_SCOPE;
+    }
+
     // Check range
-    if (scope < this.MIN_SCOPE || scope > this.MAX_SCOPE) {
+    if (scope > this.MAX_SCOPE) {
       throw new pULIDScopeError(`Invalid scope: ${scope}. Must be between ${this.MIN_SCOPE}-${this.MAX_SCOPE}`);
     }
 
-    // Check protected scopes
-    if (this.PROTECTED_SCOPES.includes(scope)) {
-      throw new pULIDScopeError(`Protected scope: ${scope}. Scopes ${this.PROTECTED_SCOPES.join(' and ')} are reserved`);
-    }
+    // We no longer check for protected scopes since 0 is allowed as input
+    // but gets converted to MAX_SCOPE
 
     return true;
   }
@@ -55,14 +62,21 @@ class ScopeManager {
 
   /**
    * Convert scope to 2-byte big-endian array
-   * @param {number} scope - Scope value (1-65534)
+   * @param {number} scope - Scope value (0-65535, where 0 becomes MAX_SCOPE)
    * @returns {Uint8Array} 2-byte array
    */
   scopeToBytes(scope) {
-    this.validate(scope);
+    // If scope is 0, use MAX_SCOPE instead
+    const actualScope = scope === 0 ? this.MAX_SCOPE : scope;
+
+    // For all other scopes, validate normally
+    if (scope !== 0) {
+      this.validate(scope);
+    }
+
     return new Uint8Array([
-      (scope >> 8) & 0xff,
-      scope & 0xff
+      (actualScope >> 8) & 0xff,
+      actualScope & 0xff
     ]);
   }
 
