@@ -81,18 +81,24 @@ class ScopeManager {
   }
 
   /**
-   * Convert 2-byte array to scope value
-   * @param {Uint8Array} bytes - 2-byte array
+   * Convert 16-byte ULID array to scope value (extracts bytes 6-7)
+   * @param {Uint8Array} bytes - 16-byte ULID array
    * @returns {number} Scope value
    * @throws {pULIDScopeError} If bytes are invalid
    */
   bytesToScope(bytes) {
-    if (!bytes || bytes.length !== 2) {
-      throw new pULIDScopeError(`Invalid scope bytes: expected 2 bytes, got ${bytes ? bytes.length : 0}`);
+    if (!bytes || bytes.length !== 16) {
+      throw new pULIDScopeError(`Invalid ULID bytes: expected 16 bytes, got ${bytes ? bytes.length : 0}`);
     }
 
-    const scope = (bytes[0] << 8) | bytes[1];
-    this.validate(scope);
+    const scope = (bytes[6] << 8) | bytes[7];
+    
+    // Only validate that scope is not 0 (which is reserved/invalid in stored ULIDs)
+    // This matches Go implementation: scope 0 is invalid when extracted from ULID bytes
+    if (scope === 0) {
+      throw new pULIDScopeError('Invalid scope: extracted scope is 0 (reserved value)');
+    }
+    
     return scope;
   }
 

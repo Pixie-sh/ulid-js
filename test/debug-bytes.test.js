@@ -56,9 +56,9 @@ console.log('Expected bytes encoded to ULID:', encodedFromExpected);
 console.log('Original golang ULID:          ', testUlid);
 console.log('Match:', encodedFromExpected === testUlid ? '✓' : '✗');
 
-// Let's also try a simple test with known values
+// Let's also try a simple test with known values (16-byte array)
 console.log('\nSimple test with known values:');
-const testBytes = new Uint8Array([1, 2, 3, 4, 5]);
+const testBytes = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
 const encoded = encodeBase32(testBytes);
 const decoded = decodeBase32(encoded);
 console.log('Test bytes:', Array.from(testBytes).map(b => b.toString(16).padStart(2, '0')).join(' '));

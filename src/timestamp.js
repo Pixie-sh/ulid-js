@@ -76,16 +76,18 @@ class TimestampGenerator {
   }
 
   /**
-   * Convert 6-byte array to timestamp
-   * @param {Uint8Array} bytes - 6-byte array
+   * Convert 16-byte ULID array to timestamp (extracts bytes 0-5)
+   * @param {Uint8Array} bytes - 16-byte ULID array
    * @returns {number} Unix timestamp in milliseconds
    * @throws {pULIDTimestampError} If bytes are invalid
    */
   bytesToTimestamp(bytes) {
-    if (!bytes || bytes.length !== 6) {
-      throw new pULIDTimestampError(`Invalid timestamp bytes: expected 6 bytes, got ${bytes ? bytes.length : 0}`);
+    if (!bytes || bytes.length !== 16) {
+      throw new pULIDTimestampError(`Invalid ULID bytes: expected 16 bytes, got ${bytes ? bytes.length : 0}`);
     }
 
+    // Extract timestamp from first 6 bytes (big-endian)
+    // Using proper JavaScript arithmetic to avoid integer overflow
     let timestamp = 0;
     for (let i = 0; i < 6; i++) {
       timestamp = timestamp * 256 + bytes[i];

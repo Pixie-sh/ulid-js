@@ -3,11 +3,11 @@
  * Combines timestamp, scope, and entropy into a pULID identifier
  */
 
-const { encodeBase32, decodeBase32 } = require('./encoding');
+const { encodeBase32, decodeBase32, bytesToScope, bytesToTimestamp, bytesToEntropy } = require('./encoding');
 const { pULIDError, pULIDParseError } = require('./errors');
 const { generateEntropy } = require('./entropy');
-const { validateScope, scopeToBytes, bytesToScope } = require('./scope');
-const { validateTimestamp, timestampToBytes, bytesToTimestamp } = require('./timestamp');
+const { validateScope, scopeToBytes } = require('./scope');
+const { validateTimestamp, timestampToBytes } = require('./timestamp');
 const { formatAsUUID, uuidToBytes } = require('./uuid');
 
 /**
@@ -211,9 +211,9 @@ class pULID {
     }
 
     try {
-      const timestamp = bytesToTimestamp(bytes.slice(0, 6));
-      const scope = bytesToScope(bytes.slice(6, 8));
-      const entropy = bytes.slice(8, 16);
+      const timestamp = bytesToTimestamp(bytes);
+      const scope = bytesToScope(bytes);
+      const entropy = bytesToEntropy(bytes);
 
       return new pULID(timestamp, scope, entropy);
     } catch (error) {
